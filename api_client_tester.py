@@ -35,7 +35,7 @@ class APIClient:
             json_data = response.json()
             print("Response Body:")
             print(json.dumps(json_data, indent=2))
-        except ValueError:
+        except (ValueError, json.JSONDecodeError):
             print("Response Body (non-JSON):")
             print(response.text)
     
