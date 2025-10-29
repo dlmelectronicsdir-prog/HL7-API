@@ -69,7 +69,7 @@ def create_sample_hl7_message():
     message = (
         "MSH|^~\\&|SENDING_APP|SENDING_FAC|RECEIVING_APP|RECEIVING_FAC|"
         f"{datetime.now().strftime('%Y%m%d%H%M%S')}||ADT^A01|MSG00001|P|2.5\r"
-        "EVN|A01|{datetime.now().strftime('%Y%m%d%H%M%S')}\r"
+        f"EVN|A01|{datetime.now().strftime('%Y%m%d%H%M%S')}\r"
         "PID|1||12345^^^MRN||DOE^JOHN^A||19800101|M|||123 MAIN ST^^CITY^ST^12345\r"
         "PV1|1|I|WARD^ROOM^BED||||DOCTOR^ATTENDING|||||||||||VISIT123\r"
     )
