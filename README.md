@@ -47,6 +47,12 @@ python server.py
 
 The server will be available at `http://localhost:5000`
 
+**Note:** For security reasons, the server runs in production mode by default. To enable debug mode for development:
+```bash
+export FLASK_DEBUG=true
+python server.py
+```
+
 ### Running the Client Tester
 In a separate terminal, run the client tester:
 ```bash

@@ -62,8 +62,10 @@ def receive_hl7_message():
         }), 200
         
     except Exception as e:
+        # Log the full error for debugging but return a sanitized message
+        app.logger.error(f'Failed to parse HL7 message: {str(e)}')
         return jsonify({
-            'error': f'Failed to parse HL7 message: {str(e)}'
+            'error': 'Failed to parse HL7 message'
         }), 400
 
 
@@ -120,11 +122,16 @@ def validate_hl7_message():
         return jsonify(validation_result), 200
         
     except Exception as e:
+        # Log the full error for debugging but return a sanitized message
+        app.logger.error(f'Failed to validate HL7 message: {str(e)}')
         return jsonify({
             'valid': False,
-            'error': str(e)
+            'error': 'Invalid HL7 message format'
         }), 200
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    import os
+    # Only run in debug mode if explicitly set
+    debug_mode = os.environ.get('FLASK_DEBUG', 'False').lower() == 'true'
+    app.run(host='0.0.0.0', port=5000, debug=debug_mode)
