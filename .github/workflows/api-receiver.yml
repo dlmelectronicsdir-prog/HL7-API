@@ -1,0 +1,20 @@
+# .github/workflows/api-receiver.yml
+# This workflow listens for an external API request (a repository_dispatch event)
+# and prints the received data to the Actions log for testing.
+
+name: API Message Receiver
+
+on:
+  repository_dispatch:
+    types: [hl7-message-received]
+
+jobs:
+  log-the-message:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print received HL7 message
+        run: |
+          echo "✅ HL7 message received via API dispatch!"
+          echo "=========================================="
+          echo "${{ github.event.client_payload.hl7_data }}"
+          echo "=========================================="
