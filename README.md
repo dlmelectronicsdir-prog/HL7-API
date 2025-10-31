@@ -71,9 +71,11 @@ Once the server is running, you can access:
 - `userName`: User login name
 - `password`: User password
 
-**Default Credentials**:
+**Default Credentials** (for development only):
 - Username: `wsadmin`
 - Password: `password`
+
+**⚠️ Security Note**: These credentials are hardcoded for development and testing purposes only. In production, credentials should be stored in environment variables or a secure configuration system.
 
 **Response**:
 - Success: `OK_LOGIN|{jwt_token}`

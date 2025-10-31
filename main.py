@@ -5,7 +5,7 @@ FastAPI Middleware for Laboratory Analyzer (F2400) integration with PURELAB LIS.
 from fastapi import FastAPI, Header, HTTPException
 from typing import Optional
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import secrets
 
 app = FastAPI(
@@ -56,8 +56,8 @@ def generate_token(username: str) -> str:
     """Generate JWT token for authenticated user."""
     payload = {
         "sub": username,
-        "exp": datetime.utcnow() + timedelta(minutes=TOKEN_EXPIRATION_MINUTES),
-        "iat": datetime.utcnow()
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRATION_MINUTES),
+        "iat": datetime.now(timezone.utc)
     }
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -156,7 +156,7 @@ async def upload_results(path_data: str, token: Optional[str] = Header(None)):
     
     # Parse path_data
     parts = path_data.split("|")
-    if len(parts) < 1:
+    if len(parts) < 2:
         return "NOT_FOUND"
     
     sample_id = parts[0]
@@ -168,14 +168,17 @@ async def upload_results(path_data: str, token: Optional[str] = Header(None)):
     # Process test results
     status_flags = []
     for i in range(1, len(parts)):
-        if "=" in parts[i]:
-            test_code, result = parts[i].split("=", 1)
-            # Check if test is in the sample's test list
-            if test_code in MOCK_SAMPLES[sample_id]["tests"]:
-                status_flags.append("UPLOADED")
+        try:
+            if "=" in parts[i]:
+                test_code, result = parts[i].split("=", 1)
+                # Check if test is in the sample's test list
+                if test_code in MOCK_SAMPLES[sample_id]["tests"]:
+                    status_flags.append("UPLOADED")
+                else:
+                    status_flags.append("NOT_FOUND")
             else:
                 status_flags.append("NOT_FOUND")
-        else:
+        except ValueError:
             status_flags.append("NOT_FOUND")
     
     return "|".join(status_flags)
